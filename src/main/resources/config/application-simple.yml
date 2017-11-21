@@ -1,0 +1,16 @@
+# =============================================================================
+# Server Configuration (loop-sleep-millis: 1000)
+# =============================================================================
+
+netty4.server:
+    host: "localhost"
+    port: 10038
+    thread-count: 10
+    ramp-up-seconds: 10
+    loop-count: 4
+    payload-file-path: "/Users/zany/IdeaProjects/samples/netty4-test-client/src/main/resources/payload"
+    payload-file-name: "sample.dat"
+    send-delay-millis: 0
+    connection-timeout-millis: 3000
+    disconnect-after-complete: true
+    disconnect-delay-millis: 0

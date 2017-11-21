@@ -1,0 +1,37 @@
+→←↑↓
+☆★○●□■△▲▽▼◁◀▷▶♤♠♧♣▣◐◑
+①②③④⑤⑥⑦⑧⑨⑩⑪⑫⑬⑭⑮
+
+-----------------------------------------------
+● maven command arguments
+-----------------------------------------------
+-U -DskipTests spring-boot:run
+
+-----------------------------------------------
+● jvm arguments
+-----------------------------------------------
+-Drun.arguments=-?
+-Drun.arguments=-h,localhost,-p,10038,-t,1,-r,1,-l,1
+-Dfile.encoding=UTF-8
+-Djava.net.preferIPv4Stack=true
+
+-----------------------------------------------
+● 쓰레드 처리에 관하여.. (잘못됨)
+-----------------------------------------------
+thread:
+  core-pool-size:  128
+  max-pool-size:   -1
+  queue-capacity:  -1
+
+에서 core-pool-size 는 의미 없다.
+그냥 initial 의 의미만 가짐.
+
+netty4.server:
+    host: "gold"
+    port: 10038
+    thread-count: 10
+    loop-count: 50
+
+의 thread-count 가 정의되면 스레드 풀 사이즈도 그것을 따라가게 개발되어 있음
+netty4.server.thread-count 만큼의 부하를 유지하기 위해서..
+netty4.server.thread-count 가 1 이상일 때만 스레드 풀 사이즈가 재정의됨.
