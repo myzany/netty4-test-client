@@ -35,3 +35,5 @@ netty4.server:
 의 thread-count 가 정의되면 스레드 풀 사이즈도 그것을 따라가게 개발되어 있음
 netty4.server.thread-count 만큼의 부하를 유지하기 위해서..
 netty4.server.thread-count 가 1 이상일 때만 스레드 풀 사이즈가 재정의됨.
+
+test
