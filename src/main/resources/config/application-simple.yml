@@ -5,9 +5,9 @@
 netty4.server:
     host: "localhost"
     port: 10038
-    thread-count: 10
-    ramp-up-seconds: 10
-    loop-count: 4
+    thread-count: 1
+    ramp-up-seconds: 1
+    loop-count: 1
     payload-file-path: "/Users/zany/IdeaProjects/samples/netty4-test-client/src/main/resources/payload"
     payload-file-name: "sample.dat"
     send-delay-millis: 0

@@ -41,7 +41,7 @@ public class SocketThreadInfoVo {
     private long endTimestamp;
 
     private int messageIndex;
-    private Boolean active = null;
+    private Boolean active;
 
     /** time... */
 
