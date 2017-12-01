@@ -9,12 +9,20 @@ targetCompatibility = JavaVersion.VERSION_1_8
 group = 'kr.zany.sample.netty4.client'
 version = '0.0.1-SNAPSHOT'
 
+repositories {
+    mavenCentral()
+    maven { url repoGroupUrl }
+    maven { url 'https://repo.spring.io/libs-snapshot' }
+}
+
 buildscript {
 	repositories {
-		mavenCentral()
+        mavenCentral()
+        maven { url repoGroupUrl }
+        maven { url 'https://repo.spring.io/libs-snapshot' }
 	}
 	dependencies {
-		classpath("org.springframework.boot:spring-boot-gradle-plugin:1.5.8.RELEASE")
+		classpath("org.springframework.boot:spring-boot-gradle-plugin:$springbootVersion")
 	}
 }
 
@@ -24,8 +32,8 @@ buildscript {
 
 dependencies {
 
-    compile group: 'org.springframework.boot', name: 'spring-boot-starter', version: '1.5.8.RELEASE'
-    testCompile group: 'org.springframework.boot', name: 'spring-boot-starter-test', version: '1.5.8.RELEASE'
+    compile group: 'org.springframework.boot', name: 'spring-boot-starter', version: springbootVersion
+    testCompile group: 'org.springframework.boot', name: 'spring-boot-starter-test', version: springbootVersion
 
     compile group: 'io.netty', name: 'netty-all', version: '4.1.17.Final'
     compile group: 'org.projectlombok', name: 'lombok', version: '1.16.18'
@@ -52,7 +60,8 @@ jar {
         into("META-INF/maven/$project.group/$project.name")
     }
     manifest {
-        attributes 'Implementation-Title': project.name,
+        attributes 'Main-Class': 'kr.zany.sample.netty4.client.application.Application',
+                'Implementation-Title': project.name,
                 'Implementation-Version': project.version,
                 'Implementation-Vendor': 'http://zany.kr',
                 'Built-By': System.getProperty('user.name'),
@@ -62,14 +71,11 @@ jar {
     }
 }
 
-repositories {
-    mavenCentral()
-    maven {
-        name 'snapshot'
-        url deploySnapshotUrl
-    }
-    maven {
-        name 'release'
-        url deployReleaseUrl
-    }
+
+// ------------------------------------------------------
+// ++++ tasks ++++
+// ------------------------------------------------------
+
+task wrapper(type: Wrapper) {
+    gradleVersion = '2.0'
 }
