@@ -2,6 +2,7 @@ package kr.zany.sample.netty4.client.application;
 
 import kr.zany.sample.netty4.client.client.ClientRunner;
 import kr.zany.sample.netty4.client.common.data.*;
+import kr.zany.sample.netty4.client.common.listener.ShutdownHook;
 import kr.zany.sample.netty4.client.common.util.Functions;
 import kr.zany.sample.netty4.client.common.util.ThreadUtils;
 import lombok.extern.slf4j.Slf4j;
@@ -90,6 +91,9 @@ public class Application implements CommandLineRunner {
     // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
     public static void main(String[] args) {
+
+        Runtime.getRuntime().addShutdownHook(new ShutdownHook());
+
         new SpringApplicationBuilder(Application.class).run(args);
     }
 
@@ -334,16 +338,16 @@ public class Application implements CommandLineRunner {
 
         /** awaiting threads... */
 
-        SummaryVo summaryVo = SummaryVo.builder().build();
-
-        MinMaxAvg threadPoolActive = MinMaxAvg.builder().min(Long.MAX_VALUE).max(Long.MIN_VALUE).build();
-
-        MinMaxAvg connectedTime    = MinMaxAvg.builder().min(Long.MAX_VALUE).max(Long.MIN_VALUE).build();
-        MinMaxAvg sentTime         = MinMaxAvg.builder().min(Long.MAX_VALUE).max(Long.MIN_VALUE).build();
-        MinMaxAvg receivedTime     = MinMaxAvg.builder().min(Long.MAX_VALUE).max(Long.MIN_VALUE).build();
-        MinMaxAvg disconnectedTime = MinMaxAvg.builder().min(Long.MAX_VALUE).max(Long.MIN_VALUE).build();
-
         if (threadSettings.isBaseSyncThread()) {
+
+            SummaryVo summaryVo = SummaryVo.builder().build();
+
+            MinMaxAvg threadPoolActive = MinMaxAvg.builder().min(Long.MAX_VALUE).max(Long.MIN_VALUE).build();
+
+            MinMaxAvg connectedTime    = MinMaxAvg.builder().min(Long.MAX_VALUE).max(Long.MIN_VALUE).build();
+            MinMaxAvg sentTime         = MinMaxAvg.builder().min(Long.MAX_VALUE).max(Long.MIN_VALUE).build();
+            MinMaxAvg receivedTime     = MinMaxAvg.builder().min(Long.MAX_VALUE).max(Long.MIN_VALUE).build();
+            MinMaxAvg disconnectedTime = MinMaxAvg.builder().min(Long.MAX_VALUE).max(Long.MIN_VALUE).build();
 
             Collection<CommonResultVo> results = ThreadUtils.awaitAsyncTasks(allThreads);
 
@@ -378,24 +382,25 @@ public class Application implements CommandLineRunner {
 
                 log.info(ToStringBuilder.reflectionToString(result));
             }
+
+            long spentTime = System.currentTimeMillis() - startTime;
+            float spentSec = spentTime / 1000.0f;
+
+            System.out.println("--------------------------------------------------------");
+            System.out.println(String.format("- TOTAL REQ    : %d", summaryVo.getTotalRequest()));
+            System.out.println(String.format("- ERR COUNT    : %d", summaryVo.getErrorCount()));
+            System.out.println(String.format("- TPS          : %-8.3f", (float)summaryVo.getTotalRequest() / spentSec));
+            System.out.println("--------------------------------------------------------");
+            System.out.println(String.format("- THREAD POOL  : %6d    %7d    %11.3f   ", threadPoolActive.getMin(), threadPoolActive.getMax(), threadPoolActive.getSum() / summaryVo.getTotalRequest()));
+            System.out.println("--------------------------------------------------------");
+            System.out.println(String.format("- CONNECTED    : %6d ms %7d ms %11.3f ms", connectedTime.getMin(),    connectedTime.getMax(),    connectedTime.getSum() / summaryVo.getTotalRequest()));
+            System.out.println(String.format("- SENT         : %6d ms %7d ms %11.3f ms", sentTime.getMin(),         sentTime.getMax(),         sentTime.getSum() / summaryVo.getTotalRequest()));
+            System.out.println(String.format("- RECEIVED     : %6d ms %7d ms %11.3f ms", receivedTime.getMin(),     receivedTime.getMax(),     receivedTime.getSum() / summaryVo.getTotalRequest()));
+            System.out.println(String.format("- DISCONNECTED : %6d ms %7d ms %11.3f ms", disconnectedTime.getMin(), disconnectedTime.getMax(), disconnectedTime.getSum() / summaryVo.getTotalRequest()));
+            System.out.println("--------------------------------------------------------");
+            System.out.println(String.format("DONE (%s)", Functions.formatElapsedTime(spentTime)));
         }
 
-        long spentTime = System.currentTimeMillis() - startTime;
-        float spentSec = spentTime / 1000.0f;
-
-        System.out.println("--------------------------------------------------------");
-        System.out.println(String.format("- TOTAL REQ    : %d", summaryVo.getTotalRequest()));
-        System.out.println(String.format("- ERR COUNT    : %d", summaryVo.getErrorCount()));
-        System.out.println(String.format("- TPS          : %-8.3f", (float)summaryVo.getTotalRequest() / spentSec));
-        System.out.println("--------------------------------------------------------");
-        System.out.println(String.format("- THREAD POOL  : %6d    %7d    %11.3f   ", threadPoolActive.getMin(), threadPoolActive.getMax(), threadPoolActive.getSum() / summaryVo.getTotalRequest()));
-        System.out.println("--------------------------------------------------------");
-        System.out.println(String.format("- CONNECTED    : %6d ms %7d ms %11.3f ms", connectedTime.getMin(),    connectedTime.getMax(),    connectedTime.getSum() / summaryVo.getTotalRequest()));
-        System.out.println(String.format("- SENT         : %6d ms %7d ms %11.3f ms", sentTime.getMin(),         sentTime.getMax(),         sentTime.getSum() / summaryVo.getTotalRequest()));
-        System.out.println(String.format("- RECEIVED     : %6d ms %7d ms %11.3f ms", receivedTime.getMin(),     receivedTime.getMax(),     receivedTime.getSum() / summaryVo.getTotalRequest()));
-        System.out.println(String.format("- DISCONNECTED : %6d ms %7d ms %11.3f ms", disconnectedTime.getMin(), disconnectedTime.getMax(), disconnectedTime.getSum() / summaryVo.getTotalRequest()));
-        System.out.println("--------------------------------------------------------");
-        System.out.println(String.format("DONE (%s)", Functions.formatElapsedTime(spentTime)));
         //System.exit(0);
     }
 }
