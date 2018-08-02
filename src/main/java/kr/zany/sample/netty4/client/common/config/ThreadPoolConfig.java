@@ -1,5 +1,6 @@
 package kr.zany.sample.netty4.client.common.config;
 
+import kr.zany.sample.netty4.client.common.data.StaticVariables;
 import kr.zany.sample.netty4.client.common.data.ThreadSettings;
 import org.springframework.aop.interceptor.AsyncUncaughtExceptionHandler;
 import org.springframework.aop.interceptor.SimpleAsyncUncaughtExceptionHandler;
@@ -27,23 +28,22 @@ public class ThreadPoolConfig implements AsyncConfigurer {
     // Inject Beans
     // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-    @Inject
-    private ThreadSettings threadSettings;
+    private final ThreadSettings threadSettings;
 
 
     // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     // Member Variables
     // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-    private static final int DEFAULT_THREADS_BY_CPU;
-    static {
-        DEFAULT_THREADS_BY_CPU = Runtime.getRuntime().availableProcessors() * 2;
-    }
-
 
     // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     // Constructor
     // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+    @Inject
+    public ThreadPoolConfig(ThreadSettings threadSettings) {
+        this.threadSettings = threadSettings;
+    }
 
 
     // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -71,15 +71,15 @@ public class ThreadPoolConfig implements AsyncConfigurer {
         ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
 
         if (corePoolSize > -1) {
-            executor.setCorePoolSize((corePoolSize > 0) ? corePoolSize : DEFAULT_THREADS_BY_CPU);
+            executor.setCorePoolSize((corePoolSize > 0) ? corePoolSize : StaticVariables.AVAILABLE_PROCESSORS * 16);
         }
 
         if (maxPoolSize > -1) {
-            executor.setMaxPoolSize((maxPoolSize > 0) ? maxPoolSize : DEFAULT_THREADS_BY_CPU * 16);
+            executor.setMaxPoolSize((maxPoolSize > 0) ? maxPoolSize : StaticVariables.AVAILABLE_PROCESSORS * 64);
         }
 
         if (queueCapacity > -1) {
-            executor.setQueueCapacity((queueCapacity > 0) ? queueCapacity : DEFAULT_THREADS_BY_CPU * 16);
+            executor.setQueueCapacity((queueCapacity > 0) ? queueCapacity : StaticVariables.AVAILABLE_PROCESSORS * 64);
         }
 
         executor.setThreadNamePrefix("Async-");
