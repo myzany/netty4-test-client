@@ -148,14 +148,14 @@
         <repository>
             <id>apm-repo-snapshot</id>
             <name>APM Repository Snapshot</name>
-            <url>http://home.zany.kr:9825/nexus/content/repositories/apm-repo-snapshot</url>
+            <url>http://home.zany.kr:19800/nexus/content/repositories/apm-repo-snapshot</url>
             <releases><enabled>false</enabled></releases>
             <snapshots><enabled>true</enabled></snapshots>
         </repository>
         <repository>
             <id>apm-repo-release</id>
             <name>APM Repository Release</name>
-            <url>http://home.zany.kr:9825/nexus/content/repositories/apm-repo-release</url>
+            <url>http://home.zany.kr:19800/nexus/content/repositories/apm-repo-release</url>
             <releases><enabled>true</enabled></releases>
             <snapshots><enabled>false</enabled></snapshots>
         </repository>
@@ -165,12 +165,12 @@
         <snapshotRepository>
             <id>apm-repo-snapshot</id>
             <name>APM Repository Snapshot</name>
-            <url>http://home.zany.kr:9825/nexus/content/repositories/apm-repo-snapshot</url>
+            <url>http://home.zany.kr:19800/nexus/content/repositories/apm-repo-snapshot</url>
         </snapshotRepository>
         <repository>
             <id>apm-repo-release</id>
             <name>APM Repository Release</name>
-            <url>http://home.zany.kr:9825/nexus/content/repositories/apm-repo-release</url>
+            <url>http://home.zany.kr:19800/nexus/content/repositories/apm-repo-release</url>
         </repository>
     </distributionManagement>
 
